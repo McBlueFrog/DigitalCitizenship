@@ -1,34 +1,112 @@
-</script><!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Digital Nation Wallet</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Nation Wallet Generator</title>
+  <!-- W3.CSS from W3Schools -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body { font-family: 'Roboto', sans-serif; background-color: #f7f9fc; }
+    .container { max-width: 600px; margin: 40px auto; }
+    header { text-align: center; margin-bottom: 30px; }
+    .w3-card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .step { margin-bottom: 30px; }
+    .links a { margin: 0 10px; text-decoration: none; }
+    footer { text-align: center; margin-top: 40px; font-size: 0.9em; color: #555; }
+  </style>
 </head>
 <body>
-  <h1>Generate Wallet & Sign</h1>
-  <button id="genWallet">Generate Wallet</button>
-  <pre id="wallet"></pre>
-  
-  <input id="nonce" placeholder="Enter nonce" />
-  <button id="signNonce">Sign Nonce</button>
-  <pre id="signature"></pre>
+  <div class="w3-container container">
+    <header>
+      <h1 class="w3-xlarge">Digital Nation ID</h1>
+      <p class="w3-text-gray">Generate and secure your Ethereum wallet for digital citizenship identification number</p>
+    </header>
+
+    <div class="w3-card w3-white w3-padding">
+      <!-- Step 1 -->
+      <div class="step">
+        <h3 class="w3-large">Step 1: Login or Generate ID number</h3>
+        <p>To continue, either login with your existing ID or generate a new one.</p>
+        <input id="inputAddress" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your identification number (address)">
+        <input id="inputPrivateKey" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your private key">
+        <button id="loginWallet" class="w3-button w3-orange w3-round w3-margin-bottom">Login ID</button>
+        <div>
+          <strong>Or:</strong> <button id="genWallet" class="w3-button w3-blue w3-round">Generate New ID</button>
+        </div>
+        <pre id="wallet" class="w3-container w3-light-gray w3-padding w3-round"></pre>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <h3 class="w3-large">Step 2: Store Your Private Key</h3>
+        <p>Copy the <strong>Private Key</strong> shown above and store it in a secure place: a password manager, encrypted file, or a paper backup.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <h3 class="w3-large">Step 3: Sign a Nonce (Optional)</h3>
+        <input id="nonce" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Enter nonce or challenge">
+        <button id="signNonce" class="w3-button w3-green w3-round">Sign Nonce</button>
+        <pre id="signature" class="w3-container w3-light-gray w3-padding w3-round w3-margin-top"></pre>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="w3-center links">
+        <h4>Quick Links</h4>
+        <a href="https://matrix.to/#/#your-nation:matrix.org" class="w3-button w3-border w3-round">Matrix</a>
+        <a href="https://discord.gg/your-invite" class="w3-button w3-border w3-round">Discord</a>
+        <a href="/goals.html" class="w3-button w3-border w3-round">Nation Objectives</a>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2025 Digital Nation • All private key operations happen locally in your browser.
+    </footer>
+  </div>
 
   <script>
-    let wallet;
+    window.onload = () => {
+      const { ethers } = window;
+      let wallet;
 
-    document.getElementById('genWallet').onclick = () => {
-      wallet = ethers.Wallet.createRandom();
-      document.getElementById('wallet').textContent = `Address: ${wallet.address}\nPrivate Key: ${wallet.privateKey}\n**Keep your private key safe!**`;
-    };
+      // Login existing
+      document.getElementById('loginWallet').onclick = () => {
+        const addr = document.getElementById('inputAddress').value.trim();
+        const key = document.getElementById('inputPrivateKey').value.trim();
+        if (!addr || !key) {
+          alert('Paste both address and private key.');
+          return;
+        }
+        try {
+          wallet = new ethers.Wallet(key);
+          if (wallet.address.toLowerCase() !== addr.toLowerCase()) throw new Error('Address mismatch');
+          document.getElementById('wallet').textContent = `Logged in: ${wallet.address}`;
+        } catch (e) {
+          alert('Invalid private key or address.');
+        }
+      };
 
-    document.getElementById('signNonce').onclick = async () => {
-      const nonce = document.getElementById('nonce').value;
-      if(!wallet || !nonce) {
-        alert('Generate wallet and enter nonce first!');
-        return;
-      }
-      const signature = await wallet.signMessage(nonce);
-      document.getElementById('signature').textContent = signature;
+      // Generate new
+      document.getElementById('genWallet').onclick = () => {
+        wallet = ethers.Wallet.createRandom();
+        document.getElementById('wallet').textContent = 
+          `Address:\n ${wallet.address}\nPrivate Key:\n ${wallet.privateKey}\n`;
+      };
+
+      // Sign nonce
+      document.getElementById('signNonce').onclick = async () => {
+        const nonceValue = document.getElementById('nonce').value.trim();
+        if (!wallet || !nonceValue) {
+          alert('Generate or login wallet and enter a nonce first.');
+          return;
+        }
+        const signature = await wallet.signMessage(nonceValue);
+        document.getElementById('signature').textContent = signature;
+      };
     };
   </script>
 </body>
