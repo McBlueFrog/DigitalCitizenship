@@ -1,0 +1,35 @@
+</script><!DOCTYPE html>
+<html>
+<head>
+  <title>Digital Nation Wallet</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+  <h1>Generate Wallet & Sign</h1>
+  <button id="genWallet">Generate Wallet</button>
+  <pre id="wallet"></pre>
+  
+  <input id="nonce" placeholder="Enter nonce" />
+  <button id="signNonce">Sign Nonce</button>
+  <pre id="signature"></pre>
+
+  <script>
+    let wallet;
+
+    document.getElementById('genWallet').onclick = () => {
+      wallet = ethers.Wallet.createRandom();
+      document.getElementById('wallet').textContent = `Address: ${wallet.address}\nPrivate Key: ${wallet.privateKey}\n**Keep your private key safe!**`;
+    };
+
+    document.getElementById('signNonce').onclick = async () => {
+      const nonce = document.getElementById('nonce').value;
+      if(!wallet || !nonce) {
+        alert('Generate wallet and enter nonce first!');
+        return;
+      }
+      const signature = await wallet.signMessage(nonce);
+      document.getElementById('signature').textContent = signature;
+    };
+  </script>
+</body>
+</html>
