@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Digital Nation Wallet Generator</title>
-  <!-- W3.CSS from W3Schools -->
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Favicon -->
-  <link rel="icon" href="https://www.svgrepo.com/show/297195/passport.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="https://www.svgrepo.com/show/297195/passport.svg" type="image/svg+xml" />
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
-      background-image: repeating-linear-gradient(135deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 2px,transparent 2px, transparent 4px),linear-gradient(135deg, rgb(165, 230, 235),rgb(29, 32, 232));
+      background-image: repeating-linear-gradient(135deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 2px,transparent 2px, transparent 4px), linear-gradient(135deg, rgb(165, 230, 235), rgb(29, 32, 232));
       color: #eee;
       background-attachment: fixed;
       background-size: cover;
@@ -50,6 +47,11 @@
       font-size: 0.9em;
       color: #aaa;
     }
+    #signature {
+      overflow-x: auto;
+      max-width: 100%;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
@@ -67,8 +69,8 @@
         <input id="inputAddress" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your identification number (address)">
         <input id="inputPrivateKey" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your private key">
         <div class="w3-center">
-        <button id="loginWallet" class="w3-button w3-green w3-round w3-margin-bottom">Login ID</button>
-        <button id="genWallet" class="w3-button w3-orange w3-round w3-margin-bottom">Generate New ID</button>
+          <button id="loginWallet" class="w3-button w3-green w3-round w3-margin-bottom">Login ID</button>
+          <button id="genWallet" class="w3-button w3-orange w3-round w3-margin-bottom">Generate New ID</button>
         </div>
         <pre id="wallet" class="w3-container w3-light-gray w3-padding w3-round"></pre>
       </div>
@@ -76,10 +78,11 @@
       <!-- Step 2 -->
       <div class="step">
         <h3 class="w3-large">Step 2: Store Your Private Key</h3>
-        <p>Copy the <strong>Private Key</strong> and <strong>Address</strong> shown above and store them securely: in a password manager, encrypted file, or write it on paper.</p>
-        <p><strong>Important:</strong> Losing your private key means losing access to your ID.</p>
-        <p><strong>Never</strong> share your <strong>Private Key</strong>. It grants full control of your digital identity.</p>
-        <p>Your <strong>Address</strong> is your public ID number, safe to share when verifying identity with others.</p>
+        <p>Once your ID is shown above, you must store your credentials <strong>somewhere safe</strong>.</p>
+        <p><strong>Private Key:</strong> Save this securely (e.g. encrypted file, password manager, or written down).</p>
+        <p><strong>Address:</strong> This is your public ID number. It's safe to share.</p>
+        <p><strong>Never share your private key with anyone.</strong> It gives full access to your digital ID.</p>
+        <p><strong>Losing your private key = losing your identity.</strong> There's no recovery.</p>
       </div>
 
       <!-- Step 3 -->
@@ -107,7 +110,15 @@
   <script>
     window.onload = () => {
       const { ethers } = window;
-      let wallet;
+      let wallet = null;
+
+      function isAddressValid(addr) {
+        return /^0x[a-fA-F0-9]{40}$/.test(addr);
+      }
+
+      function isPrivateKeyValid(key) {
+        return /^0x[a-fA-F0-9]{64}$/.test(key);
+      }
 
       document.getElementById('loginWallet').onclick = () => {
         const addr = document.getElementById('inputAddress').value.trim();
@@ -116,9 +127,14 @@
           alert('Paste both address and private key.');
           return;
         }
+        if (!isAddressValid(addr) || !isPrivateKeyValid(key)) {
+          alert('Invalid format: Check address or private key.');
+          return;
+        }
         try {
-          wallet = new ethers.Wallet(key);
-          if (wallet.address.toLowerCase() !== addr.toLowerCase()) throw new Error('Address mismatch');
+          const tempWallet = new ethers.Wallet(key);
+          if (tempWallet.address.toLowerCase() !== addr.toLowerCase()) throw new Error('Address mismatch');
+          wallet = tempWallet;
           document.getElementById('wallet').textContent = `Logged in: ${wallet.address}`;
         } catch (e) {
           alert('Invalid private key or address.');
@@ -127,16 +143,21 @@
 
       document.getElementById('genWallet').onclick = () => {
         wallet = ethers.Wallet.createRandom();
-        document.getElementById('wallet').textContent = `Address:\n ${wallet.address}\nPrivate Key:\n ${wallet.privateKey}\n`;
+        document.getElementById('wallet').textContent =
+          `Address:\n${wallet.address}\nPrivate Key:\n${wallet.privateKey}\n`;
       };
 
       document.getElementById('signNonce').onclick = async () => {
-        const nonceValue = document.getElementById('nonce').value.trim();
-        if (!wallet || !nonceValue) {
-          alert('Generate or login wallet and enter a statement first.');
+        const message = document.getElementById('nonce').value.trim();
+        if (!wallet) {
+          alert('Generate or login to a wallet first.');
           return;
         }
-        const signature = await wallet.signMessage(nonceValue);
+        if (!message) {
+          alert('Enter a message to sign.');
+          return;
+        }
+        const signature = await wallet.signMessage(message);
         document.getElementById('signature').textContent = signature;
       };
     };
