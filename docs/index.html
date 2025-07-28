@@ -8,34 +8,67 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Favicon -->
+  <link rel="icon" href="https://www.svgrepo.com/show/297195/passport.svg" type="image/svg+xml">
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
-    body { font-family: 'Roboto', sans-serif; background-color: #f7f9fc; }
-    .container { max-width: 700px; margin: 40px auto; }
-    header { text-align: center; margin-bottom: 30px; }
-    .w3-card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    .step { margin-bottom: 30px; }
-    .links a { margin: 0 10px; text-decoration: none; }
-    footer { text-align: center; margin-top: 40px; font-size: 0.9em; color: #555; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background-image: repeating-linear-gradient(135deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 2px,transparent 2px, transparent 4px),linear-gradient(135deg, rgb(165, 230, 235),rgb(29, 32, 232));
+      color: #eee;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .w3-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    input, button, pre {
+      color: #000;
+    }
+    .step {
+      margin-bottom: 30px;
+    }
+    .links a {
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
   <div class="w3-container container">
     <header>
-      <h1 class="w3-xlarge">Digital Nation ID</h1>
-      <p class="w3-text-gray">Generate and secure your Ethereum wallet for digital citizenship identification number</p>
+      <h1 class="w3-xxlarge"><strong>Digital Nation ID</strong></h1>
+      <p class="w3-text-white">Generate and secure your Ethereum wallet as your identification number</p>
     </header>
 
-    <div class="w3-card w3-white w3-padding">
+    <div class="w3-card w3-padding">
       <!-- Step 1 -->
       <div class="step">
-        <h3 class="w3-large">Step 1: Login or Generate ID number</h3>
+        <h3 class="w3-large">Step 1: Login or Generate ID</h3>
         <p>To continue, either login with your existing ID or generate a new one.</p>
         <input id="inputAddress" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your identification number (address)">
         <input id="inputPrivateKey" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your private key">
-        <button id="loginWallet" class="w3-button w3-orange w3-round w3-margin-bottom">Login ID</button>
-        <div>
-          <button id="genWallet" class="w3-button w3-blue w3-round">Generate New ID</button>
+        <div class="w3-center">
+        <button id="loginWallet" class="w3-button w3-green w3-round w3-margin-bottom">Login ID</button>
+        <button id="genWallet" class="w3-button w3-orange w3-round w3-margin-bottom">Generate New ID</button>
         </div>
         <pre id="wallet" class="w3-container w3-light-gray w3-padding w3-round"></pre>
       </div>
@@ -43,17 +76,17 @@
       <!-- Step 2 -->
       <div class="step">
         <h3 class="w3-large">Step 2: Store Your Private Key</h3>
-        <p>Copy the <strong>Private Key</strong> and <strong>Address</strong> shown above and store it in a secure place: a password manager, encrypted file, or a paper backup.</p>
-        <p><strong>Important:</strong> This is your only way to access your digital citizenship ID. If you lose it, you will lose access to your ID.</p>
-        <p><strong>Never</strong> share your <strong>Private Key</strong> key with anyone. It is the key to your digital identity.</p>
-        <p>The <strong>Address</strong> is your public ID number, which you <strong>Can Share</strong> with others to verify your identity or for further proof using signatures.</p>
+        <p>Copy the <strong>Private Key</strong> and <strong>Address</strong> shown above and store them securely: in a password manager, encrypted file, or write it on paper.</p>
+        <p><strong>Important:</strong> Losing your private key means losing access to your ID.</p>
+        <p><strong>Never</strong> share your <strong>Private Key</strong>. It grants full control of your digital identity.</p>
+        <p>Your <strong>Address</strong> is your public ID number, safe to share when verifying identity with others.</p>
       </div>
 
       <!-- Step 3 -->
       <div class="step">
-        <h3 class="w3-large">Step 3: Sign a Signature (Optional)</h3>
-        <input id="nonce" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Enter Signature to sign">
-        <button id="signNonce" class="w3-button w3-green w3-round">Sign Signature</button>
+        <h3 class="w3-large">Step 3: Sign a Statement</h3>
+        <input id="nonce" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Enter statement to sign">
+        <button id="signNonce" class="w3-button w3-green w3-round">Sign Statement</button>
         <pre id="signature" class="w3-container w3-light-gray w3-padding w3-round w3-margin-top"></pre>
       </div>
 
@@ -76,7 +109,6 @@
       const { ethers } = window;
       let wallet;
 
-      // Login existing
       document.getElementById('loginWallet').onclick = () => {
         const addr = document.getElementById('inputAddress').value.trim();
         const key = document.getElementById('inputPrivateKey').value.trim();
@@ -93,18 +125,15 @@
         }
       };
 
-      // Generate new
       document.getElementById('genWallet').onclick = () => {
         wallet = ethers.Wallet.createRandom();
-        document.getElementById('wallet').textContent = 
-          `Address:\n ${wallet.address}\nPrivate Key:\n ${wallet.privateKey}\n`;
+        document.getElementById('wallet').textContent = `Address:\n ${wallet.address}\nPrivate Key:\n ${wallet.privateKey}\n`;
       };
 
-      // Sign nonce
       document.getElementById('signNonce').onclick = async () => {
         const nonceValue = document.getElementById('nonce').value.trim();
         if (!wallet || !nonceValue) {
-          alert('Generate or login wallet and enter a nonce first.');
+          alert('Generate or login wallet and enter a statement first.');
           return;
         }
         const signature = await wallet.signMessage(nonceValue);
