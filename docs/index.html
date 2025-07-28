@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
     body { font-family: 'Roboto', sans-serif; background-color: #f7f9fc; }
-    .container { max-width: 600px; margin: 40px auto; }
+    .container { max-width: 700px; margin: 40px auto; }
     header { text-align: center; margin-bottom: 30px; }
     .w3-card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .step { margin-bottom: 30px; }
@@ -35,7 +35,7 @@
         <input id="inputPrivateKey" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Paste your private key">
         <button id="loginWallet" class="w3-button w3-orange w3-round w3-margin-bottom">Login ID</button>
         <div>
-          <strong>Or:</strong> <button id="genWallet" class="w3-button w3-blue w3-round">Generate New ID</button>
+          <button id="genWallet" class="w3-button w3-blue w3-round">Generate New ID</button>
         </div>
         <pre id="wallet" class="w3-container w3-light-gray w3-padding w3-round"></pre>
       </div>
@@ -43,14 +43,17 @@
       <!-- Step 2 -->
       <div class="step">
         <h3 class="w3-large">Step 2: Store Your Private Key</h3>
-        <p>Copy the <strong>Private Key</strong> shown above and store it in a secure place: a password manager, encrypted file, or a paper backup.</p>
+        <p>Copy the <strong>Private Key</strong> and <strong>Address</strong> shown above and store it in a secure place: a password manager, encrypted file, or a paper backup.</p>
+        <p><strong>Important:</strong> This is your only way to access your digital citizenship ID. If you lose it, you will lose access to your ID.</p>
+        <p><strong>Never</strong> share your <strong>Private Key</strong> key with anyone. It is the key to your digital identity.</p>
+        <p>The <strong>Address</strong> is your public ID number, which you <strong>Can Share</strong> with others to verify your identity or for further proof using signatures.</p>
       </div>
 
       <!-- Step 3 -->
       <div class="step">
-        <h3 class="w3-large">Step 3: Sign a Nonce (Optional)</h3>
-        <input id="nonce" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Enter nonce or challenge">
-        <button id="signNonce" class="w3-button w3-green w3-round">Sign Nonce</button>
+        <h3 class="w3-large">Step 3: Sign a Signature (Optional)</h3>
+        <input id="nonce" class="w3-input w3-border w3-round w3-margin-bottom" placeholder="Enter Signature to sign">
+        <button id="signNonce" class="w3-button w3-green w3-round">Sign Signature</button>
         <pre id="signature" class="w3-container w3-light-gray w3-padding w3-round w3-margin-top"></pre>
       </div>
 
