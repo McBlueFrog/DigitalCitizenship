@@ -16,7 +16,7 @@ This project allows users to generate IDs and digitally "sign" a statement by pr
 
 ### Web App
 
-1. Open `https://mcbluefrog.github.io/DigitalCitizenship/` in a modern browser.
+1. Open `https://project-zenerith.github.io/DigitalCitizenship/` in a modern browser.
 2. **Generate** or **Login** using your ID address and private key
 3. Click **Sign** to sign the statement with your wallet.
 4. Your address and signed message will appear below the button.
